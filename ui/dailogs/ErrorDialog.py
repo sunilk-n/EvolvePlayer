@@ -1,8 +1,8 @@
 from PySide import QtGui, QtCore
 
-class errorDialog(QtGui.QWidget):
-    def __init__(self, message = "", title = "", parent=None):
-        super(errorDialog, self).__init__()
+class ErrorDialog(QtGui.QWidget):
+    def __init__(self, message="", title="", parent=None):
+        super(ErrorDialog, self).__init__()
 
         self.setParent(parent)
         self._message = message
@@ -37,6 +37,6 @@ class errorDialog(QtGui.QWidget):
 if __name__ == '__main__':
     import sys
     app = QtGui.QApplication(sys.argv)
-    gui = errorDialog(message="Testing", title="Error occured here")
+    gui = ErrorDialog(message="Testing", title="Error occured here")
     gui.show()
     sys.exit(app.exec_())
