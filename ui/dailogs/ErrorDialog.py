@@ -7,11 +7,12 @@ class ErrorDialog(QtGui.QWidget):
         self.setParent(parent)
         self._message = message
         self._title = title
-        self.resize(500, 150)
+        self.setFixedSize(500, 150)
 
         self.setWindowFlags(QtCore.Qt.WindowCloseButtonHint)
 
         self.msgDisp = QtGui.QLabel(self)
+        self.msgDisp.setWordWrap(True)
         # self.msgDisp.setAlignment(QtCore.Qt.AlignCenter)
         okBtn = QtGui.QPushButton(self)
         okBtn.setText("OK")
@@ -25,6 +26,7 @@ class ErrorDialog(QtGui.QWidget):
         layout.addWidget(okBtn, 1, 1, 1, 1)
         layout.addItem(horSpacer1, 1, 0, 1, 1)
         layout.addItem(horSpacer2, 1, 2, 1, 1)
+        layout.setMargin(15)
         self.setLayout(layout)
 
         self.displayWindow()
