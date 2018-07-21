@@ -1,0 +1,9 @@
+<RCC>
+  <qresource prefix="image">
+    <file>repeat.png</file>
+    <file>next.png</file>
+    <file>previous.png</file>
+    <file>stop.png</file>
+    <file>play.png</file>
+  </qresource>
+</RCC>
