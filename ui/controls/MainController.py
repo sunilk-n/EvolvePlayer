@@ -1,36 +1,70 @@
 from PySide import QtGui, QtUiTools, QtCore
 from ui.controls import *
 from images import *
+from core.CommandParams import CommandParams
 
 class MainController(QtGui.QWidget):
     def __init__(self, imgPath, parent=None):
         super(MainController, self).__init__(parent)
         self.setParent(parent)
 
-        self.setMaximumSize(600, 200)
-        self.setMinimumSize(0, 200)
+        self.playFlag = True
 
         loader = QtUiTools.QUiLoader()
         file = QtCore.QFile(os.path.join(getControlsPath(),"controlUi.ui"))
         file.open(QtCore.QFile.ReadOnly)
-        myWidget = loader.load(file, self)
+        self.musicCtrl = loader.load(file, self)
         file.close()
+        maxCtrlSize = self.musicCtrl.maximumSize()
+        minCtrlSize = self.musicCtrl.minimumSize()
+        self.setMaximumSize(maxCtrlSize)
+        self.setMinimumSize(minCtrlSize)
 
         playImg = QtGui.QPixmap(os.path.join(imgPath, "play.png"))
+        self.pauseImg = QtGui.QPixmap(os.path.join(imgPath, "pause.png"))
         stopImg = QtGui.QPixmap(os.path.join(imgPath, "stop.png"))
         prevImg = QtGui.QPixmap(os.path.join(imgPath, "previous.png"))
         nextImg = QtGui.QPixmap(os.path.join(imgPath, "next.png"))
-        repImg = QtGui.QPixmap(os.path.join(imgPath, "previous.png"))
+        repImg = QtGui.QPixmap(os.path.join(imgPath, "repeat.png"))
 
-        myWidget.playBtn.setIcon(playImg)
-        myWidget.stopBtn.setIcon(stopImg)
-        myWidget.nextBtn.setIcon(nextImg)
-        myWidget.prevBtn.setIcon(prevImg)
-        myWidget.repeatBtn.setIcon(repImg)
+        self.musicCtrl.playBtn.setIcon(playImg)
+        self.musicCtrl.stopBtn.setIcon(stopImg)
+        self.musicCtrl.nextBtn.setIcon(repImg)
+        self.musicCtrl.prevBtn.setIcon(prevImg)
+        self.musicCtrl.repeatBtn.setIcon(nextImg)
 
         outerLayout = QtGui.QGridLayout()
-        outerLayout.addWidget(myWidget, 0, 0, 1, 1)
+        outerLayout.addWidget(self.musicCtrl, 0, 0, 1, 1)
         self.setLayout(outerLayout)
+        self.musicCtrl.playBtn.setShortcut("Space")
+
+        self.createPauseBtn()
+
+
+        self.musicCtrl.playBtn.clicked.connect(self.pauseSong)
+        self.pauseBtn.clicked.connect(self.playSong)
+
+    def createPauseBtn(self):
+        self.pauseBtn = QtGui.QPushButton(self.musicCtrl)
+        self.pauseBtn.setObjectName("pausebtn")
+        self.pauseBtn.setSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        self.pauseBtn.setMaximumSize(100, 100)
+        self.pauseBtn.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.pauseBtn.setStyleSheet("max-height:100px;max-width:100px;border-radius:49px;")
+        self.pauseBtn.setIcon(self.pauseImg)
+        self.pauseBtn.setIconSize(QtCore.QSize(100, 100))
+
+        self.musicCtrl.gridLayout.addWidget(self.pauseBtn, 0, 2, 2, 1)
+        self.pauseBtn.setVisible(False)
+        self.pauseBtn.setShortcut("Space")
+
+    def pauseSong(self, *args):
+        self.pauseBtn.setVisible(True)
+        self.musicCtrl.playBtn.setVisible(False)
+
+    def playSong(self, *args):
+        self.musicCtrl.playBtn.setVisible(True)
+        self.pauseBtn.setVisible(False)
 
 if __name__ == '__main__':
     import sys
