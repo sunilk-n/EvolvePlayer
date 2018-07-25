@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="image">
+    <file>front.jpeg</file>
     <file>repeat.png</file>
     <file>next.png</file>
     <file>previous.png</file>

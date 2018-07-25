@@ -4,6 +4,7 @@ from ui.controls import MainController
 from core.CommandParams import CommandParams
 import images
 import os
+from ui import *
 
 class EvolvePlayer(QtGui.QWidget):
     def __init__(self):
@@ -17,7 +18,7 @@ class EvolvePlayer(QtGui.QWidget):
         self.setLayout(mainLayout)
 
         self.setWindowIcon(logoIcon)
-        self.setStyleSheet("background:#444243")
+        self.setStyleSheet("background:{0}".format(getBasicColors()[1]))
 
 
 if __name__ == '__main__':

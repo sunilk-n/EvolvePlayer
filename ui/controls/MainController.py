@@ -2,6 +2,8 @@ from PySide import QtGui, QtUiTools, QtCore
 from ui.controls import *
 from images import *
 from core.CommandParams import CommandParams
+from ProgressBar import Widget
+from ui import *
 
 class MainController(QtGui.QWidget):
     def __init__(self, imgPath, parent=None):
@@ -15,10 +17,11 @@ class MainController(QtGui.QWidget):
         file.open(QtCore.QFile.ReadOnly)
         self.musicCtrl = loader.load(file, self)
         file.close()
-        maxCtrlSize = self.musicCtrl.maximumSize()
-        minCtrlSize = self.musicCtrl.minimumSize()
+        ctrlWidth = self.musicCtrl.frameGeometry().width()
+        ctrlHeight = self.musicCtrl.frameGeometry().height()+170
+        maxCtrlSize = QtCore.QSize(ctrlWidth, ctrlHeight)
         self.setMaximumSize(maxCtrlSize)
-        self.setMinimumSize(minCtrlSize)
+        # self.setMinimumSize(minCtrlSize)
 
         playImg = QtGui.QPixmap(os.path.join(imgPath, "play.png"))
         self.pauseImg = QtGui.QPixmap(os.path.join(imgPath, "pause.png"))
@@ -33,10 +36,16 @@ class MainController(QtGui.QWidget):
         self.musicCtrl.prevBtn.setIcon(prevImg)
         self.musicCtrl.repeatBtn.setIcon(nextImg)
 
+        self.progressBar = Widget()
+        self.progressBar.pr2.setSongImg(imgPath, "front.jpg")
+
         outerLayout = QtGui.QGridLayout()
-        outerLayout.addWidget(self.musicCtrl, 0, 0, 1, 1)
+        outerLayout.addWidget(self.progressBar, 0, 1, 1, 1)
+        outerLayout.addWidget(self.musicCtrl, 1, 0, 1, 3)
         self.setLayout(outerLayout)
         self.musicCtrl.playBtn.setShortcut("Space")
+        self.musicCtrl.nextBtn.setShortcut("N")
+        self.musicCtrl.prevBtn.setShortcut("B")
 
         self.createPauseBtn()
 
