@@ -1,5 +1,4 @@
 from PySide import QtGui
-from PIL import _imaging
 from ui.controls import MainController
 from core.CommandParams import CommandParams
 import images

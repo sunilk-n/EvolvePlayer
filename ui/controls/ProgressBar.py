@@ -52,14 +52,14 @@ class RoundProgress(QProgressBar):
         pen.setColor(QColor("darkblue"))
         painter.setPen(pen)
         pen = QPen()
-        pen.setWidth(9)
+        pen.setWidth(10)
         pen.setColor(QColor("lightgrey"))
         painter.setPen(pen)
         painter.drawArc(5.1, 5.1, self.width()-10, self.height()-10, 1450, -5650)
         #painter.drawEllipse(0,0,100,100)
         painter.setBrush(QColor("lightblue"))
         pen = QPen()
-        pen.setWidth(10)
+        pen.setWidth(11)
         pen.setColor(QColor("{0}".format(getBasicColors()[0])))
         painter.setPen(pen)
         painter.drawArc(5.1, 5.1, self.width()-10, self.height()-10, 1450, self.values)
@@ -72,22 +72,20 @@ class Widget(QWidget):
         QWidget.__init__(self)
         self.timer = QTimer()
         self.a = 0
-        self.timer.timeout.connect(self.to)
-        self.timer.start(10)
+        # self.playBtn = playBtn
+        # self.pauseBtn = pauseBtn
+        # self.timer.timeout.connect(self.to)
+        # self.timer.start(songTime/10)
         self.setMaximumSize(170, 170)
         self.setMinimumSize(170, 170)
         # self.setGeometry(500, 100, 200, 200)
-        self.pr2 = RoundProgress(self)
-        self.pr2.setGeometry(0, 0, 170, 170)
+        self.roundProgress = RoundProgress(self)
+        self.roundProgress.setGeometry(0, 0, 170, 170)
+        self.roundProgress.setValue(0)
         # layout = QVBoxLayout(self)
         # layout.addWidget(self.pr2)
         # self.setLayout(layout)
 
-    def to(self):
-        self.a += 1
-        self.pr2.setValue(self.a)
-        if self.a == 100:
-            self.timer.stop()
 
 if __name__ == '__main__':
     import sys

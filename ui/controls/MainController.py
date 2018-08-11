@@ -36,8 +36,10 @@ class MainController(QtGui.QWidget):
         self.musicCtrl.prevBtn.setIcon(prevImg)
         self.musicCtrl.repeatBtn.setIcon(nextImg)
 
+        self.createPauseBtn()
+
         self.progressBar = Widget()
-        self.progressBar.pr2.setSongImg(imgPath, "front.jpg")
+        self.progressBar.roundProgress.setSongImg(imgPath, "front.jpg")
 
         outerLayout = QtGui.QGridLayout()
         outerLayout.addWidget(self.progressBar, 0, 1, 1, 1)
@@ -46,8 +48,6 @@ class MainController(QtGui.QWidget):
         self.musicCtrl.playBtn.setShortcut("Space")
         self.musicCtrl.nextBtn.setShortcut("N")
         self.musicCtrl.prevBtn.setShortcut("B")
-
-        self.createPauseBtn()
 
 
         self.musicCtrl.playBtn.clicked.connect(self.pauseSong)
