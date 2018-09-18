@@ -39,11 +39,6 @@ class RoundProgress(QProgressBar):
         self.values = ((n*5650)/100)*(-1)
         # self.label.setText("<center>"+str(self.n)+"</center>")
 
-    def setNvalue(self, n):
-        self.n = n
-        self.values = ((n*5650)/100)*(-1)
-        # self.label.setText("<center>"+str(self.n)+"</center>")
-
     def paintEvent(self, event):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)

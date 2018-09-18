@@ -14,25 +14,43 @@ class SongDetails:
 
     def songName(self):
         '''return the song name of selected'''
-        return self.songTags['title'][0]
+        try:
+            return self.songTags['title'][0]
+        except:
+            return "No Information"
 
     def movieName(self):
-        return self.songTags['album'][0]
+        try:
+            return self.songTags['album'][0]
+        except:
+            return "No Information"
 
     def singerName(self):
-        return self.songTags['artist'][0]
+        try:
+            return self.songTags['artist'][0]
+        except:
+            return "No Information"
 
     def composerName(self):
-        return self.songTags['composer'][0]
+        try:
+            return self.songTags['composer'][0]
+        except:
+            return "No Information"
 
     def yearRelease(self):
-        return self.songTags['date'][0]
+        try:
+            return self.songTags['date'][0]
+        except:
+            return "No Information"
 
     def imageDisplay(self):
-        img = self.imageFile.tags['APIC:'].data
-        with open(os.path.join(getImgPath(), "front.jpg"), 'wb') as imger:
-            imger.write(img)
-        return os.path.join(getImgPath(), "front.jpg")
+        try:
+            img = self.imageFile.tags['APIC:'].data
+            with open(os.path.join(getImgPath(), "front.jpg"), 'wb') as imger:
+                imger.write(img)
+            return os.path.join(getImgPath(), "front.jpg")
+        except:
+            return None
     def setSongName(self, songName):
 
         self.songTags['title'] = songName

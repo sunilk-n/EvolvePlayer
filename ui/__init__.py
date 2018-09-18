@@ -6,4 +6,5 @@ def getUiPath():
 def getBasicColors():
     baseClr = "#2166a8"
     contrastClr = "#444243"
-    return [baseClr, contrastClr]
+    baseText = "#DDD"
+    return [baseClr, contrastClr, baseText]

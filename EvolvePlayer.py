@@ -1,5 +1,5 @@
 from PySide import QtGui
-from ui.controls import MainController
+from ui import MainController
 from core.CommandParams import CommandParams
 import images
 import os
