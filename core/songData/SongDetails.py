@@ -1,5 +1,6 @@
 from mutagen.easyid3 import EasyID3
 from mutagen import File
+from mutagen.mp3 import MP3
 
 from lib.data import *
 from images import *
@@ -9,8 +10,9 @@ class SongDetails:
     for the song which was been selected'''
     def __init__(self, song):
         songDir = getSongDataPath()
-        self.songTags = EasyID3(os.path.join(songDir, song))
-        self.imageFile = File(os.path.join(songDir, song))
+        self.fullSongPath = os.path.join(songDir, song)
+        self.songTags = EasyID3(self.fullSongPath)
+        self.imageFile = File(self.fullSongPath)
 
     def songName(self):
         '''return the song name of selected'''
@@ -51,6 +53,12 @@ class SongDetails:
             return os.path.join(getImgPath(), "front.jpg")
         except:
             return None
+
+    def getSongLength(self):
+        audio = MP3(self.fullSongPath)
+        print audio.info.length
+        return audio.info.length
+
     def setSongName(self, songName):
 
         self.songTags['title'] = songName
@@ -85,4 +93,4 @@ if __name__ == '__main__':
     #song = EasyID3(os.path.join(getSongDataPath(), "crazyFeeling.mp3"))
     songName = SongDetails("crazyFeeling.mp3")
     # songName.setComposerName("Devi Sri Prasad")
-    print songName.imageDisplay()
+    print songName.getSongLength()

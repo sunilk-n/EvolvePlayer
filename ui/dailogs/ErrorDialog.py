@@ -26,7 +26,7 @@ class ErrorDialog(QtGui.QWidget):
         layout.addWidget(okBtn, 1, 1, 1, 1)
         layout.addItem(horSpacer1, 1, 0, 1, 1)
         layout.addItem(horSpacer2, 1, 2, 1, 1)
-        layout.setMargin(15)
+        # layout.setMargin(15)
         self.setLayout(layout)
 
         self.displayWindow()
@@ -34,6 +34,9 @@ class ErrorDialog(QtGui.QWidget):
     def displayWindow(self):
         self.setWindowTitle(self._title)
         self.msgDisp.setText(self._title)
+
+    def showErrorWindow(self):
+        self.show()
 
 
 if __name__ == '__main__':

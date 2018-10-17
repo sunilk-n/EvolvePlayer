@@ -6,6 +6,8 @@ class SongThread(QtCore.QThread):
     runTime = QtCore.Signal(int)
     def __init__(self, timer=0, totalSecs=240):
         super(SongThread, self).__init__()
+        self.timerPerCent = totalSecs / 100
+        print self.timerPerCent
         if timer == -1:
             self.currentTime = 0
         else:
@@ -22,6 +24,7 @@ class SongThread(QtCore.QThread):
     def dePauseTimeline(self):
         self.pauseTimer = False
 
+
     def interPretSong(self):
         self.interPret = False
 
@@ -31,7 +34,8 @@ class SongThread(QtCore.QThread):
                 self.currentTime = 0
                 break
             if not self.pauseTimer:
+                self.currentTime = self.currentTime + self.eachSec
                 sleep(1)
-                self.currentTime = self.currentTime+self.eachSec
+
             print self.currentTime
             self.runTime.emit(self.currentTime)

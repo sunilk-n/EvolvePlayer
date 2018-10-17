@@ -1,11 +1,21 @@
 from PySide import QtGui, QtUiTools, QtCore
 from ui.controls import *
+from ui.dailogs.ErrorDialog import ErrorDialog as _ErrorDialog
 from images import *
 from core.CommandParams import CommandParams
 from core.SongThread import SongThread
 from ui.controls.ProgressBar import Widget
 from ui.controls.SongList import SongList
 from ui import *
+from pygame import mixer_music as _mixer
+from pygame import mixer
+from lib.data import *
+from core.GetSongList import GetSongList as _GetSongList
+from core.songData.SongDetails import SongDetails
+
+class NoSongsException():
+    def __init__(self, err):
+        print err
 
 class MainController(QtGui.QWidget):
     def __init__(self, imgPath, parent=None):
@@ -13,6 +23,7 @@ class MainController(QtGui.QWidget):
         self.setParent(parent)
 
         self.playFlag = True
+        self.currentSong = ""#"crazyFeeling.mp3"
 
         loader = QtUiTools.QUiLoader()
         _file = QtCore.QFile(os.path.join(getControlsPath(),"controlUi.ui"))
@@ -41,23 +52,60 @@ class MainController(QtGui.QWidget):
         self.createPauseBtn()
 
         self.progressBar = Widget()
-        self.progressBar.roundProgress.setSongImg(imgPath, "front.jpg")
+        self.setSongImage(path=imgPath)
+
+        self.listSongsTable = SongList()
 
         outerLayout = QtGui.QGridLayout()
         outerLayout.addWidget(self.progressBar, 0, 1, 1, 1)
         outerLayout.addWidget(self.musicCtrl, 1, 0, 1, 3)
-        outerLayout.addWidget(SongList(), 2, 0, 1, 3)
+        outerLayout.addWidget(self.listSongsTable, 2, 0, 1, 3)
         self.setLayout(outerLayout)
         self.musicCtrl.playBtn.setShortcut("Space")
         self.musicCtrl.nextBtn.setShortcut("N")
         self.musicCtrl.prevBtn.setShortcut("B")
-
+        self.listSongsTable.songTable.doubleClicked.connect(self.getCurrentSong)
 
         self.musicCtrl.playBtn.clicked.connect(self.playTheSong)
         self.pauseBtn.clicked.connect(self.togglePlayPause)
         self.contBtn.clicked.connect(self.togglePlayPause)
         self.playSong = None
         self.musicCtrl.stopBtn.clicked.connect(self.stopSong)
+        self.setSongToPlay()
+
+    def setSongImage(self, path=None, imageName="logoIcon.png"):
+        if path:
+            self.progressBar.roundProgress.setSongImg(path, imageName)
+        else:
+            self.progressBar.roundProgress.setSongImg(getImgPath(), imageName)
+
+    def getCurrentSong(self, id):
+        file = self.listSongsTable.songModal.index(id.row(), 0).data()+".mp3"
+        self.currentSong = file
+        getSongData = SongDetails(file)
+        imagePath = getSongData.imageDisplay()
+        if imagePath:
+            self.setSongImage(os.path.dirname(imagePath), os.path.basename(imagePath))
+        else:
+            self.setSongImage()
+        self.stopSong(NextSong=file)
+
+    def setSongToPlay(self, songName=None):
+        if songName:
+            testSong = _GetSongList().getSelectedSong(songName)
+        else:
+            if not self.currentSong:
+                print "Working"
+                try:
+                    self.currentSong = _GetSongList().updateSongs()[0]
+                except Exception as e:
+                    noSongError = _ErrorDialog(message="Unable to load the songs/nPlease add songs to the library", title="Unable to load the song")
+            testSong = _GetSongList().getSelectedSong(self.currentSong)
+
+        mixer.init()
+        _mixer.load(testSong)
+        from core.songData.SongDetails import SongDetails
+        self.playBackSong = SongDetails(testSong).getSongLength()
 
     def createPauseBtn(self):
         self.pauseBtn = QtGui.QPushButton(self.musicCtrl)
@@ -95,11 +143,13 @@ class MainController(QtGui.QWidget):
         self.musicCtrl.playBtn.setEnabled(False)
         self.pauseBtn.setVisible(True)
         self.pauseBtn.setEnabled(True)
-        self.playSong = SongThread(self.progressBar.roundProgress.value())
+        self.playSong = SongThread(self.progressBar.roundProgress.value(), self.playBackSong)
         self.playSong.start()
         self.playSong.dePauseTimeline()
         self.playSong.runTime.connect(self.updateTimeline)
         print "Entered play"
+        _mixer.play()
+
 
     def togglePlayPause(self, *args):
 
@@ -111,6 +161,7 @@ class MainController(QtGui.QWidget):
             self.playSong.pauseTimeline()
             # self.playSong.runTime.connect(self.updateTimeline)
             print "Entered Pause"
+            _mixer.pause()
 
         elif self.contBtn.isVisible():
             self.contBtn.setVisible(False)
@@ -120,8 +171,9 @@ class MainController(QtGui.QWidget):
             self.playSong.dePauseTimeline()
             # self.playSong.runTime.connect(self.updateTimeline)
             print "Entered Playing"
+            _mixer.unpause()
 
-    def stopSong(self, *args):
+    def stopSong(self, NextSong=None, *args):
         if self.playSong != None:
             self.playSong.interPretSong()
             self.playSong.exit()
@@ -135,6 +187,11 @@ class MainController(QtGui.QWidget):
         self.contBtn.setEnabled(False)
         self.contBtn.setVisible(False)
         self.progressBar.roundProgress.setValue(0)
+        mixer.quit()
+        if NextSong:
+            self.setSongToPlay(NextSong)
+        else:
+            self.setSongToPlay()
 
     def updateTimeline(self, value):
         self.progressBar.roundProgress.setValue(value)
